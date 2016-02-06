@@ -8,7 +8,7 @@
  * Intentionally doesn't hook into user_create in order to preserve a friendly
  * looking email address in the user interface.
  *
- * @version 0.1
+ * @version 0.11
  * @author Fetlock
  * @url https://github.com/fetlock/roundcube-plugin-runbox-authentication
  */
@@ -21,10 +21,16 @@ class runbox_authentication extends rcube_plugin
   {
     $this->rc = rcube::get_instance();
     $this->add_hook('authenticate', array($this, 'authentication'));
+    $this->add_hook('storage_connect', array($this, 'storage_connection'));
     $this->add_hook('smtp_connect', array($this, 'smtp_connection'));
   }
   
   function authentication($args)
+  {
+    return array('user' => str_replace('@', '%', $args['user']));
+  }
+  
+  function storage_connection($args)
   {
     return array('user' => str_replace('@', '%', $args['user']));
   }
